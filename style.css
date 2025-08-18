@@ -99,6 +99,22 @@ input { background: transparent; border: none; color: #0f0; outline: none; flex:
         border-bottom: solid 0.1px #0f0;
     }
     
+    .terminal-link {
+        color: #0f0;
+        text-decoration: underline;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+    
+    .terminal-link:hover {
+        color: #00ff00;
+        text-decoration: none;
+    }
+    
+    .terminal-link:visited {
+        color: #00cc00;
+    }
+    
     .terminal{
         border: solid 1px #0f0;
         height: 100%;

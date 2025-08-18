@@ -47,7 +47,7 @@ const commands = {
   ),
   
   about: () => (
-    "Saya Mahdi dari Binus@Malang. Saya membangun aplikasi web, backend Go, dan eksperimen AI."
+   "Saya Mahdi dari Binus@Malang, berfokus pada pengembangan aplikasi web dan mobile, serta automasi menggunakan teknologi AI."
   ),
   
   education: () => (
@@ -73,9 +73,13 @@ const commands = {
   `
   ),
   
-  contact: () => (
-    "Contact:\nEmail: youremail@example.com\nGitHub: github.com/yourhandle"
-  ),
+  contact: () => ({
+    type: 'contact',
+    data: {
+      email: 'asikmahdi@gmail.com',
+      github: 'https://github.com/MahDryyy'
+    }
+  }),
 };
 
 // Output functions
@@ -92,6 +96,25 @@ function appendOutputTyped(text, typingMs = 15) {
   pre.classList.add('output');
   terminal.appendChild(pre);
   return typeText(pre, text, typingMs).then(() => scrollToBottom());
+}
+
+function appendOutputWithLinks(outputData, typingMs = 15) {
+  const pre = document.createElement('pre');
+  pre.classList.add('output');
+  terminal.appendChild(pre);
+  
+  if (outputData.type === 'contact') {
+    pre.innerHTML = `
+Contact:
+Email: <a href="mailto:${outputData.data.email}" class="terminal-link">${outputData.data.email}</a>
+GitHub: <a href="${outputData.data.github}" target="_blank" class="terminal-link">${outputData.data.github}</a>
+    `;
+    scrollToBottom();
+    return Promise.resolve();
+  }
+  
+  
+  return typeText(pre, JSON.stringify(outputData), typingMs).then(() => scrollToBottom());
 }
 
 function appendPromptOnly(cmdText) {
@@ -137,7 +160,12 @@ async function handleCommand(rawValue) {
   const handler = commands[value];
   
   if (typeof handler === 'function') {
-    await appendOutputTyped(handler());
+    const result = handler();
+    if (typeof result === 'object' && result.type === 'contact') {
+      await appendOutputWithLinks(result);
+    } else {
+      await appendOutputTyped(result);
+    }
   } else {
     await appendOutputTyped('Command not found. Type "help" to see available commands.');
   }
